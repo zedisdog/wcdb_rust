@@ -198,7 +198,7 @@ impl<'a> CppObjectTrait for Handle<'a> {
 }
 
 impl<'a> HandleOperationTrait for Handle<'a> {
-    fn get_handle(&self, _: bool) -> Handle {
+    fn get_handle(&self, _: bool) -> Handle<'_> {
         Handle {
             handle_inner: self.handle_inner.clone(),
             database: self.database,
@@ -311,28 +311,28 @@ impl<'a> HandleORMOperationTrait for Handle<'a> {
         )
     }
 
-    fn prepare_insert<T>(&self) -> Insert<T> {
+    fn prepare_insert<T>(&self) -> Insert<'_, T> {
         let handle_inner = self.handle_inner.borrow();
         handle_inner
             .handle_orm_operation
             .prepare_insert(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_update<T>(&self) -> Update<T> {
+    fn prepare_update<T>(&self) -> Update<'_, T> {
         let handle_inner = self.handle_inner.borrow();
         handle_inner
             .handle_orm_operation
             .prepare_update(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_select<T>(&self) -> Select<T> {
+    fn prepare_select<T>(&self) -> Select<'_, T> {
         let handle_inner = self.handle_inner.borrow();
         handle_inner
             .handle_orm_operation
             .prepare_select(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_delete(&self) -> Delete {
+    fn prepare_delete(&self) -> Delete<'_> {
         let handle_inner = self.handle_inner.borrow();
         handle_inner
             .handle_orm_operation

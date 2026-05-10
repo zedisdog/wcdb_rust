@@ -297,7 +297,7 @@ impl<'a> TableOperation<'a> {
 }
 
 impl<'a> TableOperation<'a> {
-    pub fn get_handle(&self, write_hint: bool) -> Handle {
+    pub fn get_handle(&self, write_hint: bool) -> Handle<'_> {
         self.database.get_handle(write_hint)
     }
 }

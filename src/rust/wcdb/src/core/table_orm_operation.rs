@@ -22,13 +22,13 @@ pub struct TableORMOperation<'a, T, R: TableBinding<T>> {
 pub trait TableORMOperationTrait<'a, T, R: TableBinding<T>>: TableOperationTrait {
     fn get_binding(&self) -> &'a R;
 
-    fn prepare_insert(&self) -> Insert<T>;
+    fn prepare_insert(&self) -> Insert<'_, T>;
 
-    fn prepare_update(&self) -> Update<T>;
+    fn prepare_update(&self) -> Update<'_, T>;
 
-    fn prepare_select(&self) -> Select<T>;
+    fn prepare_select(&self) -> Select<'_, T>;
 
-    fn prepare_delete(&self) -> Delete;
+    fn prepare_delete(&self) -> Delete<'_>;
 
     fn insert_object(&self, object: T, fields_opt: Option<Vec<&Field<T>>>) -> WCDBResult<()>;
 
@@ -187,25 +187,25 @@ impl<'a, T, R: TableBinding<T>> TableORMOperationTrait<'a, T, R> for TableORMOpe
         self.binding
     }
 
-    fn prepare_insert(&self) -> Insert<T> {
+    fn prepare_insert(&self) -> Insert<'_, T> {
         let insert = Insert::new(self.table_operation.get_handle(true), false, true);
         insert.into_table(self.table_operation.get_table_name());
         insert
     }
 
-    fn prepare_update(&self) -> Update<T> {
+    fn prepare_update(&self) -> Update<'_, T> {
         let update = Update::new(self.table_operation.get_handle(true), false, true);
         update.table(self.table_operation.get_table_name());
         update
     }
 
-    fn prepare_select(&self) -> Select<T> {
+    fn prepare_select(&self) -> Select<'_, T> {
         let select = Select::new(self.table_operation.get_handle(false), false, true);
         select.from(self.table_operation.get_table_name());
         select
     }
 
-    fn prepare_delete(&self) -> Delete {
+    fn prepare_delete(&self) -> Delete<'_> {
         let delete = Delete::new(self.table_operation.get_handle(true), false, true);
         delete.from_table(self.table_operation.get_table_name());
         delete

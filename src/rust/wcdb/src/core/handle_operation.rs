@@ -30,7 +30,7 @@ pub struct HandleOperation {
 }
 
 pub trait HandleOperationTrait: CppObjectTrait {
-    fn get_handle(&self, write_hint: bool) -> Handle;
+    fn get_handle(&self, write_hint: bool) -> Handle<'_>;
 
     fn auto_invalidate_handle(&self) -> bool;
 

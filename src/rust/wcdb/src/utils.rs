@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::ffi::{c_char, CStr, CString};
 
 pub(crate) trait ToCow {
-    fn to_cow(&self) -> Cow<str>;
+    fn to_cow(&self) -> Cow<'_, str>;
 }
 
 impl ToCow for *const c_char {
@@ -11,7 +11,7 @@ impl ToCow for *const c_char {
     /// 2. 如 C 类型字符串指针不为 NULL，且不包含非法 UTF-8 字符，则转成的 Cow<str> 为 Cow::Borrow 类型，实际为 C 字符串的内存切片
     /// 3. 如 C 类型字符串指针不为 NULL，但包含非法 UTF-8 字符，则将非法字符转成 �，并拷贝构建一个 Cow<str> 为 Cow::Owned 的类型
     /// 注：原 *const c_char 指针仍需要手动释放
-    fn to_cow(&self) -> Cow<str> {
+    fn to_cow(&self) -> Cow<'_, str> {
         if *self == std::ptr::null() {
             return Cow::Borrowed("");
         }

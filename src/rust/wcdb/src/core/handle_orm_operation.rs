@@ -37,13 +37,13 @@ pub trait HandleORMOperationTrait {
 
     fn drop_table(&self, table_name: &str) -> WCDBResult<()>;
 
-    fn prepare_insert<T>(&self) -> Insert<T>;
+    fn prepare_insert<T>(&self) -> Insert<'_, T>;
 
-    fn prepare_update<T>(&self) -> Update<T>;
+    fn prepare_update<T>(&self) -> Update<'_, T>;
 
-    fn prepare_select<T>(&self) -> Select<T>;
+    fn prepare_select<T>(&self) -> Select<'_, T>;
 
-    fn prepare_delete(&self) -> Delete;
+    fn prepare_delete(&self) -> Delete<'_>;
 
     fn insert_object<T>(
         &self,

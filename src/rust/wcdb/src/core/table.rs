@@ -118,19 +118,19 @@ impl<'a, T, R: TableBinding<T>> TableORMOperationTrait<'a, T, R> for Table<'a, T
         self.table_orm_operation.get_binding()
     }
 
-    fn prepare_insert(&self) -> Insert<T> {
+    fn prepare_insert(&self) -> Insert<'_, T> {
         self.table_orm_operation.prepare_insert()
     }
 
-    fn prepare_update(&self) -> Update<T> {
+    fn prepare_update(&self) -> Update<'_, T> {
         self.table_orm_operation.prepare_update()
     }
 
-    fn prepare_select(&self) -> Select<T> {
+    fn prepare_select(&self) -> Select<'_, T> {
         self.table_orm_operation.prepare_select()
     }
 
-    fn prepare_delete(&self) -> Delete {
+    fn prepare_delete(&self) -> Delete<'_> {
         self.table_orm_operation.prepare_delete()
     }
 

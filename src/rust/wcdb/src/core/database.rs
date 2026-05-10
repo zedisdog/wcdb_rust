@@ -598,7 +598,7 @@ impl CppObjectConvertibleTrait for Database {
 }
 
 impl HandleOperationTrait for Database {
-    fn get_handle(&self, write_hint: bool) -> Handle {
+    fn get_handle(&self, write_hint: bool) -> Handle<'_> {
         Handle::new(self, write_hint)
     }
 
@@ -666,22 +666,22 @@ impl HandleORMOperationTrait for Database {
         )
     }
 
-    fn prepare_insert<T>(&self) -> Insert<T> {
+    fn prepare_insert<T>(&self) -> Insert<'_, T> {
         self.handle_orm_operation
             .prepare_insert(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_update<T>(&self) -> Update<T> {
+    fn prepare_update<T>(&self) -> Update<'_, T> {
         self.handle_orm_operation
             .prepare_update(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_select<T>(&self) -> Select<T> {
+    fn prepare_select<T>(&self) -> Select<'_, T> {
         self.handle_orm_operation
             .prepare_select(self.get_handle(true), self.auto_invalidate_handle())
     }
 
-    fn prepare_delete(&self) -> Delete {
+    fn prepare_delete(&self) -> Delete<'_> {
         self.handle_orm_operation
             .prepare_delete(self.get_handle(true), self.auto_invalidate_handle())
     }
