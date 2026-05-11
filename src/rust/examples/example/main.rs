@@ -1,10 +1,11 @@
 use wcdb::base::wcdb_exception::WCDBException;
-use wcdb::core::database::{Database, PerformanceInfo};
+use wcdb::core::database::{CipherVersion, Database, PerformanceInfo};
 use wcdb::core::handle_orm_operation::HandleORMOperationTrait;
 use wcdb::winq::identifier::IdentifierTrait;
+use wcdb::winq::statement::Statement;
 use wcdb_derive::WCDBTableCoding;
 
-#[derive(WCDBTableCoding)]
+#[derive(WCDBTableCoding, Debug)]
 #[WCDBTable(
     multi_indexes(name = "specifiedNameIndex", columns = ["item_i32", "message_id"]),
 )]
@@ -48,12 +49,26 @@ impl TableMessageBox {
     }
 }
 
+#[derive(WCDBTableCoding, Debug)]
+pub struct TableChatRoom {
+    #[WCDBField]
+    id: i32,
+    #[WCDBField]
+    username: String,
+    #[WCDBField]
+    owner: String,
+    #[WCDBField]
+    ext_buffer: Vec<u8>,
+}
+
 fn main() {
     global_trace();
-    let db = Database::new("./target/tmp/test.db", None);
-    db.create_table("rct_message_box", &*DB_TABLE_MESSAGE_BOX_INSTANCE)
-        .unwrap();
-    test_func(&db);
+    let db = Database::new("./target/tmp/contact.db", Some(true));
+    let key = vec![0x65,0xbc,0x7b,0x1b,0xae,0xc8,0x46,0x16,0x9f,0x57,0x0c,0x56,0x28,0xf2,0xc6,0x6e,0xa2,0x34,0x47,0xc1,0x82,0xeb,0x4f,0x3a,0xa5,0xcc,0x9a,0x43,0x7a,0x72,0x04,0x04];
+    db.set_cipher_key(&key, None, None);
+    // db.create_table("rct_message_box", &*DB_TABLE_MESSAGE_BOX_INSTANCE)
+    //     .unwrap();
+    test_func2(&db);
 }
 
 fn global_trace() {
@@ -83,6 +98,17 @@ fn global_trace() {
     assert!(ret.is_ok());
 }
 
+fn test_func2(db: &Database) {
+    let chat_room = db.get_first_object(
+        DbTableChatRoom::all_fields(),
+        "chat_room",
+        None,
+        None,
+        None,
+    ).unwrap();
+    println!("{:?}", chat_room);
+}
+
 fn test_func(db: &Database) {
     let msg_box = TableMessageBox::new();
     db.insert_object(msg_box, DbTableMessageBox::all_fields(), "rct_message_box")
@@ -97,5 +123,7 @@ fn test_func(db: &Database) {
             None,
         )
         .unwrap();
+    let msg_box = msg_box_opt.unwrap();
+    println!("{:?}", msg_box);
     println!("qxb test_func");
 }
